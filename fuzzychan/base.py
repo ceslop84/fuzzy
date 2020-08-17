@@ -56,7 +56,7 @@ class Domain(object):
 
 class FuzzyUniverse(dict):
 
-    def __init__(self, label, xi, xf, sample, **kwargs):
+    def __init__(self, label, xi, xf, sample=100, **kwargs):
         """
         Universo Fuzzy (discretizado)
         :param label: Nome do universo

@@ -145,7 +145,6 @@ class WangMendelClassifier(object):
                         c_rules.remove(rules[i])
                         # O pivo foi removido, entao devemos passar para o proximo elemento
                         break
-
                     """ END: REMOCAO DE ITENS """
 
         """ Construir estrutura de inteferencia """

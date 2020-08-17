@@ -15,10 +15,11 @@ from genetic.base.gene import Gene
 
 class Chromosome(object):
 
-    def __init__(self, fitness_func, *args):
+    def __init__(self, fitness_func, data, *args):
         self.genes = []
         self.__fitness = None
         self.__fitness_func = fitness_func
+        self.__data = data
 
         # Coletar os genes passados como parametro (template)
         for gene in args:
@@ -27,12 +28,12 @@ class Chromosome(object):
             self.genes.append(gene)
 
     def __copy__(self):
-        c = Chromosome(self.__fitness_func)
+        c = Chromosome(self.__fitness_func, self.__data)
         c.genes = copy.deepcopy(self.genes)
         return c
 
     def regen(self):
-        c = Chromosome(self.__fitness_func)
+        c = Chromosome(self.__fitness_func, self.__data)
         for gene in self.genes:
             c.genes.append(copy.deepcopy(gene).shuffle())
         return c
@@ -43,7 +44,7 @@ class Chromosome(object):
 
     def fitness(self, force=False):
         if self.__fitness is None or force:
-            self.__fitness = self.__fitness_func(self)
+            self.__fitness = self.__fitness_func(self, self.__data)
         return self.__fitness
 
 # ======================================================================================================================
