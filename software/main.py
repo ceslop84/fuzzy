@@ -121,7 +121,7 @@ def create_gene(data, variable):
     gene_temp[4], gene_temp[5] = gene_temp[5], gene_temp[4]
     return gene_temp
 
-def aplicar_fuzzy(nome, data_frame, mamdani):
+def aplicar_fuzzy(data_frame, mamdani):
     """ Método para aplicar as regras fuzzy criadas anteriormente num determinado
     conjunto de dados.
 
@@ -153,14 +153,14 @@ def aplicar_fuzzy(nome, data_frame, mamdani):
         total += 1
     # Cálculo e impressão do Percentual de Classe Correta - PCO.
     pco = 100 * (total_correto/total)
-    print(str(round(pco, 2)))
-    # Geração do arquivo de saída.
-    saida_df = pd.DataFrame(lista)
-    saida_df.columns = ["variance", "skewness",
-                        "curtosis", "entropy", "class", "result"]
-    # Registro da hora de início para a geração dos arquivos de saída em pasta específica.
-    timestamp = str(datetime.today().strftime('%Y%m%d_%H%M%S'))
-    saida_df.to_csv(timestamp + "_" + nome + ".csv", index=False)
+    return pco
+    # # Geração do arquivo de saída.
+    # saida_df = pd.DataFrame(lista)
+    # saida_df.columns = ["variance", "skewness",
+    #                     "curtosis", "entropy", "class", "result"]
+    # # Registro da hora de início para a geração dos arquivos de saída em pasta específica.
+    # timestamp = str(datetime.today().strftime('%Y%m%d_%H%M%S'))
+    # saida_df.to_csv(timestamp + "_" + nome + ".csv", index=False)
 
 def aut_bancaria_fuzzy(arquivo, max_gen, n_pop, p_mut, p_crossover):
     """ Método que detecta autenticidade de notas bancárias.
@@ -226,9 +226,10 @@ def aut_bancaria_fuzzy(arquivo, max_gen, n_pop, p_mut, p_crossover):
                             out=str(rule["consequent"]))
 
     # Aplicação das regras Fuzzy selecionada para o conjunto de validação.
-    aplicar_fuzzy("validação", df_validate, mamdani)
+    pco_val = aplicar_fuzzy(df_validate, mamdani)
     # Aplicação das regras Fuzzy selecionada para o conjunto de testes.
-    aplicar_fuzzy("teste", df_test, mamdani)
+    pco_test = aplicar_fuzzy(df_test, mamdani)
+    return [pco_val, pco_test]
 
 if __name__ == "__main__":
     # Leitura dos dados de entrada.
@@ -242,4 +243,14 @@ if __name__ == "__main__":
     # Probabilidade de Crossover/reprodução entre membros de uma geração.
     PC = 0.5
     # Execução do método principal.
-    aut_bancaria_fuzzy(ARQUIVO, MAX_GEN, NP, PM, PC)
+    resultados = list()
+    for i in range(100):
+        print ("Calculando a iteração: " + str(i))
+        res = aut_bancaria_fuzzy(ARQUIVO, MAX_GEN, NP, PM, PC)
+        resultados.append(res)
+    # Geração do arquivo de saída.
+    saida_df = pd.DataFrame(resultados)
+    saida_df.columns = ["pco_val", "pco_test"]
+    # Registro da hora de início para a geração dos arquivos de saída em pasta específica.
+    timestamp = str(datetime.today().strftime('%Y%m%d_%H%M%S'))
+    saida_df.to_csv(timestamp + ".csv", index=False)
