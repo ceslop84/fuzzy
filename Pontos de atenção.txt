@@ -1,3 +1,0 @@
-Fator estocástico da conclusão do FZ devido ao AG.
-
-Pode estar limitada ao hiperparâmetros.
